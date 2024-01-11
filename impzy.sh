@@ -60,7 +60,7 @@ func_process_jsx_files() {
     fi
     find_export_vars=()
   done
-  echo -e " ${bold}Número de componentes importados ${end}:"
+  echo -e " ${bold}Number of imported components ${end}:"
   echo -e " ${gray}${counter}${end}"
 }
 
@@ -85,7 +85,7 @@ func_main() {
 ### Opciones
 case "$1" in
   --version|-v)
-    echo ""
+    echo "v1.1.2"
     ;;
   *)
     func_main
