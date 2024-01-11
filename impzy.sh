@@ -24,7 +24,7 @@ func_initialize_index_file() {
   > "$INDEX_FILE"
 }
 
-### Procesar los archivos JSX y generar las importaciones.
+### Procesar los archivos JSX y generar las importaciones
 func_process_jsx_files() {
   local counter=0
 
@@ -46,12 +46,13 @@ func_process_jsx_files() {
     # Añadir los datos a "index.jsx"
     if [ ${#find_export_vars[@]} -gt 1 ]; then
       local add_to_index=()
-      for vars in "${find_export_vars[@]}"; do
-        add_to_index+=("$vars,")
+      for elem in "${find_export_vars[@]}"; do
+        add_to_index+=("$elem,")
         ((counter+=1))
       done
-      echo "import { ${vars[*]} } from './${FILE_PATH}.jsx';" >> "$INDEX_FILE"
-      VARS_NAME+=("${vars[*]}")
+      add_to_index[-1]=${find_export_vars[-1]}
+      echo "import { ${add_to_index[*]} } from './${FILE_PATH}.jsx';" >> "$INDEX_FILE"
+      VARS_NAME+=("${add_to_index[*]},")
     else
       echo "import { ${find_export_vars[*]} } from './${FILE_PATH}.jsx';" >> "$INDEX_FILE"
       VARS_NAME+=("${find_export_vars[*]},")
