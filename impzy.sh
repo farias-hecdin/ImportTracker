@@ -5,15 +5,15 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-
 ### Colores
 gray="\e[2m"
 bold="\e[1m"
 end="\e[0m"
 
 ### Variables globales
+IN_OPT=${1:-.}
+IN_PATH=${2:-.}
 INDEX_FILE="index.jsx"
-FILE_PATH=""
 VARS_NAME=()
 
 ### Mostrar ayuda
@@ -27,6 +27,7 @@ function func_show_help() {
     directory      Specify a directory (this is a required argument).
 
   Options:
+    -p, --parse    Examine the specified directory and return an index.jsx file.
     -h, --help     Display this help message and exit.
     -v, --version  Display the version of the program and exit.
 
@@ -41,13 +42,14 @@ func_initialize_index_file() {
 ### Procesar los archivos JSX y generar las importaciones
 func_process_jsx_files() {
   local counter=0
-  # Busca todos los archivos .jsx en el directorio actual y sus subdirectorios
+  # Buscar todos los archivos .jsx en el directorio actual y sus subdirectorios
   local find
-  find=$(fd --full-path "$1" -e "jsx")
+  find=$(fd --full-path "$IN_PATH" -e "jsx")
 
   for file in $find; do
     # Formatear la ruta del archivo
-    FILE_PATH=$(echo "$file" | sed 's/^\.\///;s/\.jsx$//')
+    local file_path
+    file_path=$(echo "$file" | sed 's/^\.\///;s/\.jsx$//')
     # Extraer el nombre del archivo sin la extensión
     local file_name
     file_name=$(basename "$file" .jsx)
@@ -70,10 +72,10 @@ func_process_jsx_files() {
         ((counter+=1))
       done
       add_to_index[-1]=${find_export_vars[-1]}
-      echo "import { ${add_to_index[*]} } from './${FILE_PATH}.jsx';" >> "$INDEX_FILE"
+      echo "import { ${add_to_index[*]} } from './${file_path}.jsx';" >> "$INDEX_FILE"
       VARS_NAME+=("${add_to_index[*]},")
     else
-      echo "import { ${find_export_vars[*]} } from './${FILE_PATH}.jsx';" >> "$INDEX_FILE"
+      echo "import { ${find_export_vars[*]} } from './${file_path}.jsx';" >> "$INDEX_FILE"
       VARS_NAME+=("${find_export_vars[*]},")
       ((counter+=1))
     fi
@@ -96,20 +98,27 @@ func_finalize_index_file() {
 
 ### Ejecutar el script
 func_main() {
-  func_initialize_index_file
-  func_process_jsx_files "$1"
-  func_finalize_index_file
+  if ! [ -d "$IN_PATH" ]; then
+    echo " Invalid directory."
+  else
+    func_initialize_index_file
+    func_process_jsx_files
+    func_finalize_index_file
+  fi
 }
 
 ### Opciones
-case "${1:-.}" in
+case "${IN_OPT}" in
   --help|-h)
     func_show_help
     ;;
   --version|-v)
-    echo "v1.1.2"
+    echo "v1.1.3"
+    ;;
+  --parse|-p)
+    func_main
     ;;
   *)
-    func_main "${1:-.}"
+    echo " Invalid option."
     ;;
 esac
