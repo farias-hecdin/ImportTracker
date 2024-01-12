@@ -5,8 +5,6 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-### Busca todos los archivos .jsx en el directorio actual y sus subdirectorios
-FIND=$(fd --full-path "${1:-'.'}" -e "jsx")
 
 ### Colores
 gray="\e[2m"
@@ -16,8 +14,24 @@ end="\e[0m"
 ### Variables globales
 INDEX_FILE="index.jsx"
 FILE_PATH=""
-FILE_NAME=""
 VARS_NAME=()
+
+### Mostrar ayuda
+function func_show_help() {
+  cat << EOF
+
+  Usage:
+    impzy [Options] [Arguments]
+
+  Arguments:
+    directory      Specify a directory (this is a required argument).
+
+  Options:
+    -h, --help     Display this help message and exit.
+    -v, --version  Display the version of the program and exit.
+
+EOF
+}
 
 ### Crear o limpiar el archivo "index.jsx"
 func_initialize_index_file() {
@@ -27,18 +41,23 @@ func_initialize_index_file() {
 ### Procesar los archivos JSX y generar las importaciones
 func_process_jsx_files() {
   local counter=0
+  # Busca todos los archivos .jsx en el directorio actual y sus subdirectorios
+  local find
+  find=$(fd --full-path "$1" -e "jsx")
 
-  for file in $FIND; do
+  for file in $find; do
     # Formatear la ruta del archivo
     FILE_PATH=$(echo "$file" | sed 's/^\.\///;s/\.jsx$//')
     # Extraer el nombre del archivo sin la extensión
-    FILE_NAME=$(basename "$file" .jsx)
+    local file_name
+    file_name=$(basename "$file" .jsx)
     # Ignorar archivos con el nombre 'index.jsx'
-    if [ "$FILE_NAME" == "index" ]; then
+    if [ "$file_name" == "index" ]; then
       continue
     fi
     # Almacenar los datos en una variable
-    local find_export_vars=($(rg --color=never 'export\s+const\s+\w+' "$file" | awk '{print $3}' | sed 's/;//g' | sed 's/,//g' | sed 's/}/\n/g'))
+    local find_export_vars
+    find_export_vars=($(rg --color=never 'export\s+const\s+\w+' "$file" | awk '{print $3}' | sed 's/;//g' | sed 's/,//g' | sed 's/}/\n/g'))
     # Ignorar los datos vacios
     if [ "${find_export_vars[*]}" == "" ]; then
       continue
@@ -78,17 +97,19 @@ func_finalize_index_file() {
 ### Ejecutar el script
 func_main() {
   func_initialize_index_file
-  func_process_jsx_files
+  func_process_jsx_files "$1"
   func_finalize_index_file
 }
 
 ### Opciones
-case "$1" in
+case "${1:-.}" in
+  --help|-h)
+    func_show_help
+    ;;
   --version|-v)
     echo "v1.1.2"
     ;;
   *)
-    func_main
+    func_main "${1:-.}"
     ;;
 esac
-
