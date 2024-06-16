@@ -4,7 +4,6 @@ Impzy es una pequeña herramienta escrita en bash, diseñada para facilitar la c
 ## Requisitos
 
 * [`fd`](https://github.com/sharkdp/fd)
-* [`ripgrep`](https://github.com/BurntSushi/ripgrep)
 
 ## Instalación
 Sigue los siguientes pasos para instalar `impzy`
