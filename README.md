@@ -1,12 +1,11 @@
+> [!TIP]
+> Use `Google Translate` to read this file in your native language.
+
 # Impzy
-Impzy es una pequeña herramienta escrita en bash, diseñada para facilitar la creación de un archivo `index.jsx` que contenga todas las exportaciones de componentes de React.js de un directorio.
-
-## Requisitos
-
-* [`fd`](https://github.com/sharkdp/fd)
+Impzy es una pequeña herramienta escrita en `[Nim](https://nim-lang.org/)` que te ayuda a crear un archivo `index` que contiene todas las exportaciones de javascript de un directorio específico.
 
 ## Instalación
-Sigue los siguientes pasos para instalar `impzy`
+Para instalar Impzy, sigue los siguientes:
 
 1. Clona este repositorio en tu equipo.
 ```bash
@@ -15,27 +14,24 @@ git clone https://github.com/farias-hecdin/Impzy.git
 
 2. Agrega el archivo `impzy` a tu ruta de `.bashrc` o `.zshrc` para poder ejecutar el programa desde cualquier directorio.
 ```bash
-### Bash
-echo 'export PATH=$PATH:/ruta/completa/al/directorio/impzy' >> ~/.bashrc
-source ~/.bashrc
-```
-
 ```bash
 ### Zsh
-echo 'export PATH=$PATH:/ruta/completa/al/directorio/impzy' >> ~/.zshrc
+echo 'export PATH=$PATH:/full/path/to/directory/impzy' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-Asegúrate de reemplazar `/ruta/completa/al/directorio/impzy` con la ruta real donde almacenaste el archivo `impzy`.
+Asegúrate de reemplazar `full/path/to/directory/impzy` con la ruta real donde almacenaste el archivo `impzy`.
 
 ## Uso
-Impzy está diseñado para ser simple y fácil de usar. Solo necesitas ejecutar el comando `impzy` seguido de la opción `--parse` o `-p` y el directorio que deseas analizar:
+Impzy es fácil de usar. Para empezar, solo necesitas ejecutar el comando impzy con dos opciones: `--parse <pattern>` y `--dir <path>`. La opción --parse te permite especificar el patrón que deseas analizar, mientras que --dir indica el directorio que deseas examinar. Por ejemplo:
 
 ```bash
-impzy --parse /ruta/al/directorio
+impzy --parse "export const" --dir "./src/components"
 ```
 
-Impzy analizará el directorio y creará un archivo `index.jsx`, con todas las exportaciones de componentes de React.js del directorio.
+Una vez que ejecutes el comando, Impzy analizará el directorio especificado (en este caso, `./src/components`) y generará un archivo `index.jsx` en el mismo directorio. Este archivo contendra las exportaciones de todos los elementos encontrados en el directorio. Si deseas personalizar el resultado, puedes modificar el patrón de exportación simplemente cambiando el argumento de la opción `--parse`."
+
+Para más información utiliza el comando `impzy --help`.
 
 ## Licencia
 Impzy está bajo la licencia MIT. Consulta el archivo `LICENSE` para obtener más información.
