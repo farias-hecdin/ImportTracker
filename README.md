@@ -2,7 +2,7 @@
 > Use `Google Translate` to read this file in your native language.
 
 # Impzy
-Impzy es una pequeña herramienta escrita en `[Nim](https://nim-lang.org/)` que te ayuda a crear un archivo `index` que contiene todas las exportaciones de javascript de un directorio específico.
+Impzy es una pequeña herramienta escrita en [`Nim`](https://nim-lang.org/) que te ayuda a crear un archivo `index` que contiene todas las exportaciones de javascript de un directorio específico.
 
 ## Instalación
 Para instalar Impzy, sigue los siguientes:
@@ -23,7 +23,7 @@ source ~/.zshrc
 Asegúrate de reemplazar `full/path/to/directory/impzy` con la ruta real donde almacenaste el archivo `impzy`.
 
 ## Uso
-Impzy es fácil de usar. Para empezar, solo necesitas ejecutar el comando impzy con dos opciones: `--parse <pattern>` y `--dir <path>`. La opción --parse te permite especificar el patrón que deseas analizar, mientras que --dir indica el directorio que deseas examinar. Por ejemplo:
+Impzy es fácil de usar. Para empezar, solo necesitas ejecutar el comando `impzy` con dos opciones: `--parse <pattern>` y `--dir <path>`. La opción `--parse` te permite especificar el patrón que deseas analizar, mientras que `--dir` indica el directorio que deseas examinar. Por ejemplo:
 
 ```bash
 impzy --parse "export const" --dir "./src/components"
