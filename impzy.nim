@@ -3,7 +3,7 @@ import colorize
 import src/tasks as mTsk
 import src/cmdos as mCmd
 
-const version: string = "v2.0.0"
+const version: string = "v2.0.1"
 
 #-- Mostrar un mensaje de ayuda
 proc showHelp() =
