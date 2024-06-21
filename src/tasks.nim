@@ -1,8 +1,8 @@
 import colorize
 import strutils
-import fileOps as fops
+import fileOps
 
-var numberComponents*: int = 0
+var g_numberComponents*: int = 0
 
 #-- Procesar todos los archivos y generar las importaciones
 proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]) =
@@ -11,15 +11,15 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
   var counter: int = 0
 
   # Crear un string que contenga cada ruta con sus componentes
-  filesFound = fops.findFiles(extensionFile, dir)
+  filesFound = g_findFiles(extensionFile, dir)
 
   if filesFound == @[]:
     echo (" No files found. \n").fgRed
-    numberComponents = counter
+    g_numberComponents = counter
     return
 
   for path in filesFound:
-    nameOfComponents = fops.extractFunctionName(path, pattern)
+    nameOfComponents = g_extractFunctionName(path, pattern)
     # Validar la lista de componentes
     if nameOfComponents[0] != "":
       echo (" ├─ $1 ($2)" % [path, $nameOfComponents.len]).fgDarkGray
@@ -29,7 +29,7 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
       add(importsListing, "import { $1 } from \"$2\";" % [lineOfComponents, path])
       inc counter
 
-  numberComponents = counter
+  g_numberComponents = counter
   return (importsListing, componentsListing)
 
 #-- Escribir en el archivo index
@@ -39,19 +39,20 @@ proc writeInIndexFile(file, line: string) =
   file.write(line & "\n")
 
 #-- Inicializar "--parse <pattern>"
-proc parse*(values: seq[string]) =
-  var defaults, args: seq[string]
-  defaults = @["export default function", "./", "jsx"]
-  args = values & defaults[values.len..^1]
+proc g_commParse*(values: seq[string]) =
+  var pattDir, dir, ext: string
+  pattDir = values[0]
+  dir = values[1]
+  ext = values[2]
 
   # Generar las importaciones y un nuevo archivo
-  var pattern, file: string
-  pattern = "(\\.$1)" % [args[2]]
-  file = "index.$1" % [args[2]]
-  var (importsListing, componentListing) = generateImports(args[0], args[1], pattern)
+  var file, pattExt: string
+  pattExt ="\\b.$1\\b" % [values[2]]
+  file = "index.$1" % [ext]
+  var (importsListing, componentListing) = generateImports(pattDir, dir, pattExt)
 
-  if numberComponents != 0:
-    fops.createNewFile(file)
+  if g_numberComponents != 0:
+    g_createNewFile(file)
 
     for elem in importsListing:
       writeInIndexFile(file, elem)
@@ -62,3 +63,4 @@ proc parse*(values: seq[string]) =
     writeInIndexFile(file, "}")
   else:
     return
+

@@ -1,13 +1,13 @@
 import os, re, strutils
 
 #-- Crear un nuevo archivo
-proc createNewFile*(name: string) =
+proc g_createNewFile*(name: string) =
   var fileName = open(name, fmWrite)
   defer: fileName.close
   fileName.write("")
 
 #-- Buscar archivos determinados en un directorio
-proc findFiles*(pattern: string, dir: string): seq[string] =
+proc g_findFiles*(pattern: string, dir: string): seq[string] =
   var matches: seq[string]
   var reExt = re(pattern)
 
@@ -15,11 +15,11 @@ proc findFiles*(pattern: string, dir: string): seq[string] =
     if kind == pcFile and contains(path, reExt):
       add(matches, path)
     elif kind == pcDir:
-      add(matches, findFiles(pattern, path))
+      add(matches, g_findFiles(pattern, path))
   return matches
 
 #-- Obtener los nombres de archivos de una lista de rutas
-proc getFileName*(paths: seq[string]): seq[string] =
+proc g_getFileName*(paths: seq[string]): seq[string] =
   var values: seq[string]
   var fileName: string
 
@@ -29,7 +29,7 @@ proc getFileName*(paths: seq[string]): seq[string] =
   return values
 
 #-- Extraer los nombres de funciones de un archivo según un patrón
-proc extractFunctionName*(dir: string, pattern: string): seq[string] =
+proc g_extractFunctionName*(dir: string, pattern: string): seq[string] =
   var reNames, rePatt, reElem: Regex
   reNames = re(pattern & " (\\w+)")
   rePatt = re(pattern)
@@ -46,3 +46,4 @@ proc extractFunctionName*(dir: string, pattern: string): seq[string] =
   else:
     add(names, "")
   return names
+

@@ -1,9 +1,8 @@
 import os, times, strutils
 import colorize
-import src/tasks as mTsk
-import src/cmdos as mCmd
+import src/tasks, src/cmdos
 
-const version: string = "v2.0.1"
+const version: string = "v2.0.2"
 
 #-- Mostrar un mensaje de ayuda
 proc showHelp() =
@@ -24,11 +23,11 @@ proc showHelp() =
   echo ""
 
 #-- Inicializar el programa
-const commandPatterns: seq[seq[string]] = @[
-  @["--parse"],
-  @["--parse", "--dir"],
-  @["--parse", "--dir", "--ext"],
-]
+var parse: Cmdos
+parse = Cmdos(
+  arguments: @["--parse", "--dir", "--ext"],
+  values: @["export default function", "./", "jsx"],
+)
 
 proc run() =
   echo " $1 $2\n" % [(" impzy ").fgBlack.bgGreen, (version).fgGreen]
@@ -39,8 +38,8 @@ proc run() =
         showHelp()
       of "--parse":
         echo (" Initializing...").bold
-        var pairValues: (seq[string], seq[string]) = mCmd.extractArgsInputPairs()
-        mCmd.processUserInput(commandPatterns, mTsk.parse, pairValues)
+        var ArgInputPairs = g_extractPairs(parse.g_processArgsInputs())
+        g_commParse(ArgInputPairs)
   else:
     showHelp()
 
@@ -48,7 +47,7 @@ proc run() =
 let timeStart: float = cpuTime()
 run()
 
-if numberComponents != 0:
+if g_numberComponents != 0:
   let executionTime: string = ((cpuTime() - timeStart) * 1000).formatFloat(ffDecimal, 3)
-  echo (" $1 elements indexed in $2 ms. \n").bold % [$numberComponents, executionTime]
+  echo (" $1 elements indexed in $2 ms. \n").bold % [$g_numberComponents, executionTime]
 
