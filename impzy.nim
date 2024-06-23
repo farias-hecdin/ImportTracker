@@ -1,26 +1,8 @@
 import os, times, strutils
 import colorize
-import src/tasks, src/cmdos
+import "./src/ui/Prints", "./src/core/Parse", "./src/vendor/Cmdos"
 
-const version: string = "v2.0.2"
-
-#-- Mostrar un mensaje de ayuda
-proc showHelp() =
-  echo (" Usage:").bold
-  echo ("   impzy [parse] [dir] [ext]").fgLightGray
-  echo ("   impzy [options]").fgLightGray
-  echo ""
-  echo (" Parse:").bold
-  echo ("   --parse <expression>  Specify the export pattern (e.g. \"export default function {{name}}\").").fgLightGray
-  echo ("   --dir <path>          Specify a directory (default: \"./\").").fgLightGray
-  echo ("   --ext <value>         Specifies the index file extension (default: \".jsx\").").fgLightGray
-  echo ""
-  echo (" Options:").bold
-  echo ("   --help                Display this help message and exit.").fgLightGray
-  echo ""
-  echo (" Examples:").bold
-  echo ("   impzy --parse \"export default function\" --dir \"./src/components\" --ext \".jsx\"").fgLightGray
-  echo ""
+const version = "v2.1.0"
 
 #-- Inicializar el programa
 var parse: Cmdos
@@ -30,24 +12,23 @@ parse = Cmdos(
 )
 
 proc run() =
-  echo " $1 $2\n" % [(" impzy ").fgBlack.bgGreen, (version).fgGreen]
-
+  Prints.showVersion(version)
   if paramCount() > 0:
     case paramStr(1):
       of "--help":
-        showHelp()
+        Prints.showHelp()
       of "--parse":
         echo (" Initializing...").bold
-        var ArgInputPairs = g_extractPairs(parse.g_processArgsInputs())
-        g_commParse(ArgInputPairs)
+        var inputPairs: seq[string] = Cmdos.extractPairs(Cmdos.processArgsInputs(parse))
+        Parse.commParse(inputPairs)
   else:
-    showHelp()
+    Prints.showHelp()
 
 #-- Run script
-let timeStart: float = cpuTime()
+let timeStart = cpuTime()
 run()
 
-if g_numberComponents != 0:
-  let executionTime: string = ((cpuTime() - timeStart) * 1000).formatFloat(ffDecimal, 3)
-  echo (" $1 elements indexed in $2 ms. \n").bold % [$g_numberComponents, executionTime]
+if Parse.numberComponents != 0:
+  let executionTime = ((cpuTime() - timeStart) * 1000).formatFloat(ffDecimal, 2)
+  echo ("\n Total: $1 elements indexed in $2 ms. \n").bold % [$Parse.numberComponents, executionTime]
 
