@@ -27,7 +27,7 @@ proc mergeArgs(self: Cmdos, A, B: seq[string]): seq[string] =
     i += 2
   return values
 
-proc g_processArgsInputs*(self: Cmdos): seq[string] =
+proc processArgsInputs*(self: Cmdos): seq[string] =
   var number = paramCount()
   var inputs, default, data: seq[string]
 
@@ -49,7 +49,7 @@ proc g_processArgsInputs*(self: Cmdos): seq[string] =
   return data
 
 #-- Extraer el valor de los argumentos
-proc g_extractPairs*(values: seq[string]): seq[string] =
+proc extractPairs*(values: seq[string]): seq[string] =
   var pairs: seq[string]
 
   for i in 0..(values).len:
@@ -57,24 +57,3 @@ proc g_extractPairs*(values: seq[string]): seq[string] =
       add(pairs, values[i])
   return pairs
 
-#-- Pruebas
-proc test() =
-  var pairs: seq[string]
-  var example1 = Cmdos(
-    arguments: @["--1", "--a", "--b"],
-    values: @["Ana", "Maria", "30"],
-  )
-  var example2 = Cmdos(
-    arguments: @["--2", "--a", "--b"],
-    values: @["Juan", "Perez", "25"],
-  )
-
-  if paramCount() > 0:
-    case paramStr(1):
-      of "--1":
-        pairs = g_extractPairs(example1.g_processArgsInputs())
-      of "--2":
-        pairs = g_extractPairs(example2.g_processArgsInputs())
-  echo pairs, "\n"
-
-# test()
