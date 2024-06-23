@@ -1,10 +1,9 @@
-import os, times, strutils
-import colorize
+import std/[os, times, strutils]
 import "./src/ui/Prints", "./src/core/Parse", "./src/vendor/Cmdos"
 
-const version = "v2.1.0"
+const version = "v2.1"
 
-#-- Inicializar el programa
+#-- Inicializacion del script
 var parse: Cmdos
 parse = Cmdos(
   arguments: @["--parse", "--dir", "--ext"],
@@ -18,7 +17,7 @@ proc run() =
       of "--help":
         Prints.showHelp()
       of "--parse":
-        echo (" Initializing...").bold
+        Prints.text(bold, " Initializing...")
         var inputPairs: seq[string] = Cmdos.extractPairs(Cmdos.processArgsInputs(parse))
         Parse.commParse(inputPairs)
   else:
@@ -30,5 +29,5 @@ run()
 
 if Parse.numberComponents != 0:
   let executionTime = ((cpuTime() - timeStart) * 1000).formatFloat(ffDecimal, 2)
-  echo ("\n Total: $1 elements indexed in $2 ms. \n").bold % [$Parse.numberComponents, executionTime]
-
+  Prints.text(bold, "\n Total:")
+  Prints.text(gray, " $# elements indexed in $# ms. \n", [$numberComponents, executionTime])

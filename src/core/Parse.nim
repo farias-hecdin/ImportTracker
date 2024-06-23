@@ -1,6 +1,5 @@
-import colorize
-import strutils, re
-import "../manage/Files", "../Utils"
+import std/[strutils, re]
+import "../manage/Files", "../Utils", "../ui/Prints"
 
 var numberComponents* = 0
 
@@ -9,12 +8,12 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
   # Obtener una lista de archivos y validarla
   var filesFound = Files.findFiles(extension, dir)
   if len(filesFound) == 0:
-    echo ("   No files found. \n").fgRed
+    Prints.text(red, "   No files found. \n")
     return
 
   # Verificar que el término de búsqueda sea válido
   if Utils.validateTermSearch(pattern) == false:
-    echo ("   Invalid pattern.\n").fgRed
+    Prints.text(red, "   Invalid pattern.\n")
     return
 
   # Procesar cada archivo encontrado y validar su contenido
@@ -33,7 +32,7 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
       numberComponents += number
 
       # Mostrar los elementos exportados
-      echo ("   $1 ($2 exports)" % [path, $number]).fgLightMagenta
+      Prints.text(pink, "   $1 ($2 exports)", @[path, $number])
 
       # Generar una linea de texto con los elementos exportados
       lineComponents = join(nameComponents, ", ")

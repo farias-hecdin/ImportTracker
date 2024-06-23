@@ -1,4 +1,4 @@
-import re, strutils
+import std/[re, strutils]
 
 #-- Unir el termino de busqueda con los elementos predeterminados
 proc completeTerm*(input: string): seq[string] =

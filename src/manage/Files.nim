@@ -1,4 +1,4 @@
-import os, re, strutils
+import std/[os, re, strutils]
 import "../Utils"
 
 #-- Crear un nuevo archivo
