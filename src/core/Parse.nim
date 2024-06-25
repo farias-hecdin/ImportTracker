@@ -2,12 +2,13 @@ import std/[strutils, re]
 import "../manage/Files", "../Utils", "../ui/Prints"
 
 var numberComponents* = 0
+var recursiveArg: string
 
 #-- Procesar todos los archivos y generar las importaciones
 proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]) =
   # Obtener una lista de archivos y validarla
-  var filesFound = Files.findFiles(extension, dir)
-  if len(filesFound) == 0:
+  var filesFound = Files.findFiles(extension, dir, recursiveArg)
+  if len(filesFound) == 0 or (len(filesFound) == 1 and contains(filesFound[0], "index.")):
     Prints.text(red, "   No files found. \n")
     return
 
@@ -22,7 +23,7 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
   var reConditional = re"default"
 
   for path in filesFound:
-    if contains(path, "index"):
+    if contains(path, "index."):
       continue
 
     var nameComponents = Files.getIdentifiers(path, pattern)
@@ -43,6 +44,8 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
 
       add(componentsListing, nameComponents)
       add(importsListing, textFragment)
+    else:
+      Prints.text(red, "   $1 (No elements found)", @[path])
 
   return (importsListing, componentsListing)
 
@@ -57,6 +60,7 @@ proc commParse*(values: seq[string]) =
   var term = values[0]
   var directory = values[1]
   var extension = values[2]
+  recursiveArg = values[3]
 
   # Generar las importaciones
   var pattExtension = "\\b.$1\\b" % [extension]

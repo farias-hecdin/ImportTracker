@@ -1,13 +1,13 @@
 import std/[os, times, strutils]
 import "./src/ui/Prints", "./src/core/Parse", "./src/vendor/Cmdos"
 
-const version = "v2.1"
+const version = "v2.2"
 
 #-- Inicializacion del script
 var parse: Cmdos
 parse = Cmdos(
-  arguments: @["--parse", "--dir", "--ext"],
-  values: @["export default function", "./", "jsx"],
+  arguments: @["--parse", "--dir", "--ext", "--recursive"],
+  values: @["export default function", "./", "jsx", "off"],
 )
 
 proc run() =

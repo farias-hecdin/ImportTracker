@@ -8,15 +8,15 @@ proc createNewFile*(name: string) =
   fileName.write("")
 
 #-- Buscar archivos determinados en un directorio
-proc findFiles*(pattern: string, dir: string): seq[string] =
+proc findFiles*(pattern, dir, recursive: string): seq[string] =
   var files: seq[string]
   var rePattern = re(pattern)
 
   for kind, path in walkDir(dir):
     if kind == pcFile and contains(path, rePattern):
       add(files, path)
-    elif kind == pcDir:
-      add(files, findFiles(pattern, path))
+    elif kind == pcDir and recursive == "on":
+      add(files, findFiles(pattern, path, recursive))
   return files
 
 #-- Obtener los nombres de archivos de una lista de rutas
