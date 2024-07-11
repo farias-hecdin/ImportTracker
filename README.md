@@ -13,8 +13,7 @@ git clone https://github.com/farias-hecdin/Impzy.git
 ```
 
 2. Agrega el archivo `impzy` a tu ruta de `.bashrc` o `.zshrc` para poder ejecutar el programa desde cualquier directorio.
-```bash
-```bash
+```sh
 ### Zsh
 echo 'export PATH=$PATH:/full/path/to/directory/impzy' >> ~/.zshrc
 source ~/.zshrc
@@ -24,7 +23,6 @@ Asegúrate de reemplazar `full/path/to/directory/impzy` con la ruta real donde a
 
 ## Uso
 Impzy es fácil de usar. Para empezar, solo necesitas ejecutar el comando `impzy` con dos opciones: `--parse <pattern>` y `--dir <path>`. La opción `--parse` te permite especificar el patrón que deseas analizar, mientras que `--dir` indica el directorio que deseas examinar. Por ejemplo:
-
 ```bash
 impzy --parse "export const" --dir "./src/components"
 ```

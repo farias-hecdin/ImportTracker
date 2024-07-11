@@ -1,25 +1,29 @@
 import std/[os, times, strutils]
-import "./src/ui/Prints", "./src/core/Parse", "./src/vendor/Cmdos"
+import cmdos
+import "./src/ui/Prints", "./src/core/Parse"
 
 const version = "v2.2"
 
 #-- Inicializacion del script
-var parse: Cmdos
-parse = Cmdos(
-  arguments: @["--parse", "--dir", "--ext", "--recursive"],
-  values: @["export default function", "./", "jsx", "off"],
+var parse = Cmdos(
+  args: @[
+    Arg(short: "-p", long: "--parse"),
+    Arg(short: "-d", long: "--dir", default: "./"),
+    Arg(short: "-e", long: "--ext", default: "jsx"),
+    Arg(short: "-r", long: "--recursive", default: "off"),
+  ]
 )
 
 proc run() =
   Prints.showVersion(version)
   if paramCount() > 0:
     case paramStr(1):
-      of "--help":
+      of "-h", "--help":
         Prints.showHelp()
-      of "--parse":
+      of "-p", "--parse":
         Prints.text(bold, " Initializing...")
-        var inputPairs: seq[string] = Cmdos.extractPairs(Cmdos.processArgsInputs(parse))
-        Parse.commParse(inputPairs)
+        var (_, values) = extractPairs(processArgs(parse))
+        Parse.commParse(values)
   else:
     Prints.showHelp()
 
