@@ -1,5 +1,5 @@
 import std/[os, re, strutils]
-import "../Utils"
+import "Terms"
 
 #-- Crear un nuevo archivo
 proc createNewFile*(name: string) =
@@ -57,7 +57,7 @@ proc processMatches(fileContent: string, matches: seq[string], keywords: seq[str
 proc getIdentifiers*(fileDir: string, pattern: string): seq[string] =
   var identifiers: seq[string]
   var fileContent = readFileContent(fileDir)
-  var keywords = Utils.extractTerm(pattern)
+  var keywords = Terms.extractTerm(pattern)
   var matches = findMatches(fileContent, keywords)
 
   if len(matches) == 0:

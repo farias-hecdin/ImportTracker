@@ -1,8 +1,9 @@
-import std/strutils
-import NimColor
+import std/[strutils, strformat]
+import pkg/NimColor
 
 const bold* = "bold"
 const gray* = "e0e0e0"
+const graydark* = "666666"
 const red* = "d84646"
 const pink* = "b844cf"
 const green* = "efd12a"
@@ -11,13 +12,17 @@ const green* = "efd12a"
 proc text*(style: string, message: string, values: openArray[string] = []) =
   let styled = "&" & style & ";"
 
-  if len(values) == 0: echo (styled & message).color
-  else: echo (styled & message).color % values
+  if len(values) == 0:
+    echo (styled & message).color
+  else:
+    echo (styled & message).color % values
 
 #-- Mostrar la version del app
 proc showVersion*(version: string) =
   let bgColor = "&000000;&bg" & green & ";"
-  echo " $1 $2\n" % [(bgColor & " impzy ").color, ("&" & green & ";" & version).color]
+  let versionColor = "&" & green & ";"
+
+  echo (" " & bgColor & " impzy ").color & (" " & versionColor & version & "\n").color
 
 #-- Mostrar un mensaje de ayuda
 proc showHelp*() =

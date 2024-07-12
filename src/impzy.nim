@@ -1,6 +1,7 @@
 import std/[os, times, strutils]
-import cmdos
-import "./src/ui/Prints", "./src/core/Parse"
+import pkg/cmdos
+import "ui/Prints"
+import "app/Parser"
 
 const version = "v2.2"
 
@@ -23,7 +24,7 @@ proc run() =
       of "-p", "--parse":
         Prints.text(bold, " Initializing...")
         var (_, values) = extractPairs(processArgs(parse))
-        Parse.commParse(values)
+        Parser.commParse(values)
   else:
     Prints.showHelp()
 
@@ -31,7 +32,7 @@ proc run() =
 let timeStart = cpuTime()
 run()
 
-if Parse.numberComponents != 0:
+if Parser.numberComponents != 0:
   let executionTime = ((cpuTime() - timeStart) * 1000).formatFloat(ffDecimal, 2)
   Prints.text(bold, "\n Total:")
-  Prints.text(gray, " $# elements indexed in $# ms. \n", [$numberComponents, executionTime])
+  Prints.text(gray, " $# elements indexed in $# ms.\n", [$numberComponents, executionTime])

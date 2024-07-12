@@ -1,8 +1,9 @@
-import std/[re, strutils]
+import std/strutils
+import pkg/tinyre
 
 #-- Unir el termino de busqueda con los elementos predeterminados
 proc completeTerm*(input: string): seq[string] =
-  const keywords = @["var", "let", "const", "function", "class"]
+  const keywords = ["var", "let", "const", "function", "class"]
   var inputWithoutAsterisk = input[0..^2]
   var terms: seq[string]
 
@@ -14,7 +15,7 @@ proc completeTerm*(input: string): seq[string] =
 proc extractTerm*(input: string): seq[string] =
   var terms: seq[string]
 
-  if contains(input, re"\*"):
+  if tinyre.contains(input, tinyre.re"\*"):
     add(terms, completeTerm(input))
   else:
     add(terms, input)

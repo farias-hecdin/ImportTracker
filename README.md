@@ -12,9 +12,8 @@ Para instalar Impzy, sigue los siguientes:
 git clone https://github.com/farias-hecdin/Impzy.git
 ```
 
-2. Agrega el archivo `impzy` a tu ruta de `.bashrc` o `.zshrc` para poder ejecutar el programa desde cualquier directorio.
+2. Agrega el archivo `impzy-[arm/arm64]` que se encuentra en `bin/` a tu ruta de `.bashrc` o `.zshrc` para poder ejecutar el programa desde cualquier directorio.
 ```sh
-### Zsh
 echo 'export PATH=$PATH:/full/path/to/directory/impzy' >> ~/.zshrc
 source ~/.zshrc
 ```

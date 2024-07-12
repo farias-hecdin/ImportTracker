@@ -1,43 +1,48 @@
-import std/[strutils, re]
-import "../manage/Files", "../Utils", "../ui/Prints"
+import std/strutils
+import pkg/tinyre
+import "../helpers/Files"
+import "../helpers/Terms"
+import "../ui/Prints"
 
 var numberComponents* = 0
 var recursiveArg: string
 
 #-- Procesar todos los archivos y generar las importaciones
 proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]) =
+  var reIndexPatt = tinyre.re"index."
+
   # Obtener una lista de archivos y validarla
   var filesFound = Files.findFiles(extension, dir, recursiveArg)
-  if len(filesFound) == 0 or (len(filesFound) == 1 and contains(filesFound[0], "index.")):
-    Prints.text(red, "   No files found. \n")
+  if len(filesFound) == 0 or (len(filesFound) == 1 and tinyre.contains(filesFound[0], reIndexPatt)):
+    Prints.text(red, "   No files found.\n")
     return
 
   # Verificar que el término de búsqueda sea válido
-  if Utils.validateTermSearch(pattern) == false:
+  if Terms.validateTermSearch(pattern) == false:
     Prints.text(red, "   Invalid pattern.\n")
     return
 
   # Procesar cada archivo encontrado y validar su contenido
   var importsListing, componentsListing: seq[string]
   var textFragment, lineComponents: string
-  var reConditional = re"default"
+  var reConditional = tinyre.re("default")
 
   for path in filesFound:
-    if contains(path, "index."):
+    if tinyre.contains(path, reIndexPatt):
       continue
 
     var nameComponents = Files.getIdentifiers(path, pattern)
     if nameComponents[0] != "":
       # Contar el numero de elementos encontrados
-      var number =len(nameComponents)
+      var number = len(nameComponents)
       numberComponents += number
 
       # Mostrar los elementos exportados
-      Prints.text(pink, "   $1 ($2 exports)", @[path, $number])
+      Prints.text(pink, "   $1 ($2 exports)", [path, $number])
 
       # Generar una linea de texto con los elementos exportados
       lineComponents = join(nameComponents, ", ")
-      if contains(pattern, reConditional):
+      if tinyre.contains(pattern, reConditional):
         textFragment = "import $1 from \"./$2\";" % [lineComponents, path]
       else:
         textFragment = "import { $1 } from \"./$2\";" % [lineComponents, path]
@@ -45,7 +50,7 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
       add(componentsListing, nameComponents)
       add(importsListing, textFragment)
     else:
-      Prints.text(red, "   $1 (No elements found)", @[path])
+      Prints.text(graydark, "   $1 (No elements found)", [path])
 
   return (importsListing, componentsListing)
 
