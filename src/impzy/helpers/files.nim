@@ -1,5 +1,5 @@
 import std/[os, re, strutils]
-import "Terms"
+import terms
 
 #-- Crear un nuevo archivo
 proc createNewFile*(name: string) =
@@ -46,7 +46,7 @@ proc processMatches(fileContent: string, matches: seq[string], keywords: seq[str
   var content = fileContent
 
   for keyword in keywords:
-    var reKeyword = re(keyword)
+    let reKeyword = re(keyword)
     for expression in matches:
       if contains(expression, reKeyword):
         content = replace(expression, keyword, "").strip()
@@ -57,10 +57,10 @@ proc processMatches(fileContent: string, matches: seq[string], keywords: seq[str
 proc getIdentifiers*(fileDir: string, pattern: string): seq[string] =
   var identifiers: seq[string]
   var fileContent = readFileContent(fileDir)
-  var keywords = Terms.extractTerm(pattern)
+  var keywords = terms.extractTerm(pattern)
   var matches = findMatches(fileContent, keywords)
 
-  if len(matches) == 0:
+  if matches.len == 0:
     add(identifiers, "")
     return identifiers
 

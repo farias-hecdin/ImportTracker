@@ -1,38 +1,30 @@
-import std/[os, times, strutils]
-import pkg/cmdos
-import "ui/Prints"
-import "app/Parser"
+import std/[os, times, strutils], pkg/[cmdos]
+import impzy/["cli", "parser", "/helpers/prints"]
 
-const version = "v2.2"
+proc main() =
+  const errorMsg = "Operation invalid.\n"
 
-#-- Inicializacion del script
-var parse = Cmdos(
-  args: @[
-    Arg(short: "-p", long: "--parse"),
-    Arg(short: "-d", long: "--dir", default: "./"),
-    Arg(short: "-e", long: "--ext", default: "jsx"),
-    Arg(short: "-r", long: "--recursive", default: "off"),
-  ]
-)
-
-proc run() =
-  Prints.showVersion(version)
   if paramCount() > 0:
+    showVersion(cli[0].version)
     case paramStr(1):
       of "-h", "--help":
-        Prints.showHelp()
-      of "-p", "--parse":
-        Prints.text(bold, " Initializing...")
-        var (_, values) = extractPairs(processArgs(parse))
-        Parser.commParse(values)
+        echo helpMsg
+      of "parse":
+        let values = processArgs(cli.parser, true)
+        prints.text(bold, "Initializing...")
+        parser.commParser(values)
+      else:
+        echo errorMsg
   else:
-    Prints.showHelp()
+    echo errorMsg
 
 #-- Run script
-let timeStart = cpuTime()
-run()
+when isMainModule:
+  let timeStart = cpuTime()
+  main()
 
-if Parser.numberComponents != 0:
-  let executionTime = ((cpuTime() - timeStart) * 1000).formatFloat(ffDecimal, 2)
-  Prints.text(bold, "\n Total:")
-  Prints.text(gray, " $# elements indexed in $# ms.\n", [$numberComponents, executionTime])
+  if parser.numberComponents > 0:
+    let executionTime = ((cpuTime() - timeStart) * 1000).formatFloat(ffDecimal, 2)
+    prints.text(bold, "\n Total:")
+    prints.text(gray, " $# elements indexed in $# ms.\n", [$numberComponents, executionTime])
+

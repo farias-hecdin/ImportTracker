@@ -1,5 +1,4 @@
-import std/strutils
-import pkg/tinyre
+import std/[strutils], pkg/[tinyre]
 
 #-- Unir el termino de busqueda con los elementos predeterminados
 proc completeTerm*(input: string): seq[string] =

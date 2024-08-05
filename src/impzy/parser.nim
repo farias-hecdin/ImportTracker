@@ -1,8 +1,5 @@
-import std/strutils
-import pkg/tinyre
-import "../helpers/Files"
-import "../helpers/Terms"
-import "../ui/Prints"
+import std/[strutils], pkg/[tinyre, cmdos]
+import helpers/["files", "terms", "prints"]
 
 var numberComponents* = 0
 var recursiveArg: string
@@ -12,14 +9,14 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
   var reIndexPatt = tinyre.re"index."
 
   # Obtener una lista de archivos y validarla
-  var filesFound = Files.findFiles(extension, dir, recursiveArg)
-  if len(filesFound) == 0 or (len(filesFound) == 1 and tinyre.contains(filesFound[0], reIndexPatt)):
-    Prints.text(red, "   No files found.\n")
+  var filesFound = files.findFiles(extension, dir, recursiveArg)
+  if filesFound.len == 0 or (filesFound.len == 1 and tinyre.contains(filesFound[0], reIndexPatt)):
+    prints.text(red, "  No files found." & "\n")
     return
 
   # Verificar que el término de búsqueda sea válido
-  if Terms.validateTermSearch(pattern) == false:
-    Prints.text(red, "   Invalid pattern.\n")
+  if terms.validateTermSearch(pattern) == false:
+    prints.text(red, "  Invalid pattern." & "\n")
     return
 
   # Procesar cada archivo encontrado y validar su contenido
@@ -31,14 +28,14 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
     if tinyre.contains(path, reIndexPatt):
       continue
 
-    var nameComponents = Files.getIdentifiers(path, pattern)
+    let nameComponents = files.getIdentifiers(path, pattern)
     if nameComponents[0] != "":
       # Contar el numero de elementos encontrados
-      var number = len(nameComponents)
+      var number = nameComponents.len
       numberComponents += number
 
       # Mostrar los elementos exportados
-      Prints.text(pink, "   $1 ($2 exports)", [path, $number])
+      prints.text(pink, "  $1 ($2 exports)", [path, $number])
 
       # Generar una linea de texto con los elementos exportados
       lineComponents = join(nameComponents, ", ")
@@ -50,7 +47,7 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
       add(componentsListing, nameComponents)
       add(importsListing, textFragment)
     else:
-      Prints.text(graydark, "   $1 (No elements found)", [path])
+      prints.text(graydark, "  $1 (No elements found)", [path])
 
   return (importsListing, componentsListing)
 
@@ -60,20 +57,20 @@ proc writeInIndexFile(file, line: string) =
   defer: file.close()
   file.write(line & "\n")
 
-#-- Inicializar "--parse <pattern>"
-proc commParse*(values: seq[string]) =
-  var term = values[0]
-  var directory = values[1]
-  var extension = values[2]
-  recursiveArg = values[3]
+#-- Inicializar "--parser <pattern>"
+proc commParser*(values: CmdosData) =
+  var term = values[0].data[1]
+  var directory = values[1].data[1]
+  var extension = values[2].data[1]
+  recursiveArg = values[3].data[1]
 
+  echo term, directory
   # Generar las importaciones
   var pattExtension = "\\b.$1\\b" % [extension]
   var file = "index.$1" % [extension]
   var (importsListing, componentsListing) = generateImports(term, directory, pattExtension)
 
-  if numberComponents == 0:
-    return
+  if numberComponents == 0: return
 
   # Crear un nuevo archivo
   createNewFile(file)
