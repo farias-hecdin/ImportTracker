@@ -53,7 +53,7 @@ proc processMatches(fileContent: string, matches: seq[string], keywords: seq[str
         add(identifiers, content)
   return identifiers
 
-#-- Obtener todos los nombre de los elementos de exportacion
+#-- Obtener todos los nombres de los elementos de exportacion
 proc getIdentifiers*(fileDir: string, pattern: string): seq[string] =
   var identifiers: seq[string]
   var fileContent = readFileContent(fileDir)

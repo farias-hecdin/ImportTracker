@@ -1,19 +1,19 @@
 import std/[strutils, strformat], pkg/[NimColor]
 
-const bold* = "bold;"
-const gray* = "e0e0e0;"
-const graydark* = "666666;"
-const red* = "d84646;"
-const pink* = "b844cf;"
-const green* = "efd12a;"
-const black* = "000000;"
+#-- Estilos
+const
+  bold* = "bold;"
+  gray* = "e0e0e0;"
+  graydark* = "666666;"
+  red* = "d84646;"
+  pink* = "b844cf;"
+  green* = "efd12a;"
+  black* = "000000;"
 
 #-- Estilar un texto
 proc text*(style, message: string, values: openArray[string] = []) =
-  if values.len == 0:
-    echo (&"&{style}{message}").color
-  else:
-    echo (&"&{style}{message}").color % values
+  if (values.len == 0): echo (&"&{style}{message}").color
+  else: echo (&"&{style}{message}").color % values
 
 #-- Mostrar la version del app
 proc showVersion*(version: string) =

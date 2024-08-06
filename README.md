@@ -21,12 +21,12 @@ source ~/.zshrc
 Asegúrate de reemplazar `full/path/to/directory/impzy` con la ruta real donde almacenaste el archivo `impzy`.
 
 ## Uso
-Impzy es fácil de usar. Para empezar, solo necesitas ejecutar el comando `impzy` con dos opciones: `--parse <pattern>` y `--dir <path>`. La opción `--parse` te permite especificar el patrón que deseas analizar, mientras que `--dir` indica el directorio que deseas examinar. Por ejemplo:
+Impzy es fácil de usar. Para empezar, solo necesitas ejecutar el comando `impzy parse` con dos opciones: `--pattern <pattern>` y `--dir <path>`. La opción `--pattern` te permite especificar el patrón que deseas analizar, mientras que `--dir` indica el directorio que deseas examinar. Por ejemplo:
 ```bash
-impzy --parse "export const" --dir "./src/components"
+impzy parse --pattern "export *" --dir "./src/components"
 ```
 
-Una vez que ejecutes el comando, Impzy analizará el directorio especificado (en este caso, `./src/components`) y generará un archivo `index.jsx` en el mismo directorio. Este archivo contendra las exportaciones de todos los elementos encontrados en el directorio. Si deseas personalizar el resultado, puedes modificar el patrón de exportación simplemente cambiando el argumento de la opción `--parse`."
+Una vez que ejecutes el comando, Impzy analizará el directorio especificado (en este caso, `./src/components`) y generará un archivo `index.jsx` en el mismo directorio. Este archivo contendra las exportaciones de todos los elementos encontrados en el directorio. Si deseas personalizar el resultado, puedes modificar el patrón de exportación simplemente cambiando el argumento de la opción `--pattern` (por ejemplo: `--pattern "export default function"`)."
 
 Para más información utiliza el comando `impzy --help`.
 

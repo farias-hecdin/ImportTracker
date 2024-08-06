@@ -1,6 +1,6 @@
 # Package
 
-version       = "2.2.2"
+version       = "2.3.0"
 author        = "Farias Hecdin"
 description   = "CLI tool to generate an index file of JavaScript exports."
 license       = "MIT"
@@ -11,6 +11,6 @@ bin           = @["impzy"]
 # Dependencies
 
 requires "nim >= 1.6.0"
-requires "NimColor >= 0.1.6"
-requires "Cmdos >= 2.0.0"
-requires "tinyre >= 1.5.0"
+requires "https://github.com/JessaTehCrow/NimColor"
+requires "https://github.com/farias-hecdin/Cmdos"
+requires "https://github.com/khchen/tinyre"

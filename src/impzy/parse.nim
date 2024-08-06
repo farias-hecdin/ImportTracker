@@ -1,8 +1,8 @@
-import std/[strutils], pkg/[tinyre, cmdos]
+import std/[strutils, strformat], pkg/[tinyre, cmdos]
 import helpers/["files", "terms", "prints"]
 
 var numberComponents* = 0
-var recursiveArg: string
+var recursiveArg, hideMsg: string
 
 #-- Procesar todos los archivos y generar las importaciones
 proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]) =
@@ -22,7 +22,7 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
   # Procesar cada archivo encontrado y validar su contenido
   var importsListing, componentsListing: seq[string]
   var textFragment, lineComponents: string
-  var reConditional = tinyre.re("default")
+  var reConditional = tinyre.re"default"
 
   for path in filesFound:
     if tinyre.contains(path, reIndexPatt):
@@ -35,10 +35,10 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
       numberComponents += number
 
       # Mostrar los elementos exportados
-      prints.text(pink, "  $1 ($2 exports)", [path, $number])
+      if hideMsg != "off": prints.text(pink, "  $1 ($2 exports)", [path, $number]) else: discard
 
       # Generar una linea de texto con los elementos exportados
-      lineComponents = join(nameComponents, ", ")
+      lineComponents = nameComponents.join(", ")
       if tinyre.contains(pattern, reConditional):
         textFragment = "import $1 from \"./$2\";" % [lineComponents, path]
       else:
@@ -47,41 +47,47 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
       add(componentsListing, nameComponents)
       add(importsListing, textFragment)
     else:
-      prints.text(graydark, "  $1 (No elements found)", [path])
+      if hideMsg != "off": prints.text(graydark, "  $1 (No elements found)", [path]) else: discard
 
   return (importsListing, componentsListing)
 
 #-- Escribir en el archivo index
-proc writeInIndexFile(file, line: string) =
-  let file = open(file, fmAppend)
-  defer: file.close()
+proc appendLine(file: File, line: string) =
   file.write(line & "\n")
 
-#-- Inicializar "--parser <pattern>"
-proc commParser*(values: CmdosData) =
-  var term = values[0].data[1]
-  var directory = values[1].data[1]
-  var extension = values[2].data[1]
-  recursiveArg = values[3].data[1]
+proc generateIndexFile(file: string, imports, components: seq[string]) =
+  let f = open(file, fmWrite)
+  defer: f.close()
 
-  echo term, directory
+  for elem in imports:
+    appendLine(f, elem)
+  appendLine(f, "")
+  appendLine(f, "export {")
+
+  for elem in components:
+    appendLine(f, &"  {elem},")
+  appendLine(f, "}")
+
+#-- Inicializar "--parse [options]"
+proc commParse*(val: CmdosData) =
+  var term      = val[0].data[1]
+  var directory = val[1].data[1]
+  var extension = val[2].data[1]
+  recursiveArg  = val[3].data[1]
+  hideMsg       = val[4].data[1]
+
   # Generar las importaciones
   var pattExtension = "\\b.$1\\b" % [extension]
-  var file = "index.$1" % [extension]
+  var file = &"index.{extension}"
   var (importsListing, componentsListing) = generateImports(term, directory, pattExtension)
 
-  if numberComponents == 0: return
+  if numberComponents == 0:
+    return
 
   # Crear un nuevo archivo
   createNewFile(file)
-
   # Añadir los datos encontrado al archivo
-  for elem in importsListing:
-    writeInIndexFile(file, elem)
-  for elem in @["", "export {"]:
-    writeInIndexFile(file, elem)
-  for elem in componentsListing:
-    writeInIndexFile(file, "  $1," % [elem])
-
-  writeInIndexFile(file, "}")
+  let imports = importsListing
+  let components = componentsListing
+  generateIndexFile(file, imports, components)
 

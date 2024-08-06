@@ -1,4 +1,6 @@
-import pkg/cmdos
+import pkg/[cmdos]
+
+#-- Crear la interfaz de cli
 
 const help* = CmdosCmd(
   names: @["-h", "help"],
@@ -10,7 +12,7 @@ const version* = CmdosCmd(
   desc: "Displays the version number and exit."
 )
 
-const parser* = CmdosCmd(
+const parse* = CmdosCmd(
   names: @["parse"],
   desc: "Generate an index file.",
   args: @[
@@ -31,15 +33,23 @@ const parser* = CmdosCmd(
     ),
     CmdosArg(
       names: @["-r", "--recursive"], inputs: @["on"],
-      desc: "Enable the recursive search. (default: on)",
-      label: "<boolean>"
+      desc: "Enable the recursive search (default: on).",
+      label: "<on/off>"
+    ),
+    CmdosArg(
+      names: @["-s", "--show"], inputs: @["on"],
+      desc: "enable the display of file export messages (default: on).",
+      label: "<on/off>"
     ),
   ]
 )
 
-const cli* = [
-  Cmdos(name: "impzy", version: "2.2.2", cmds: @[parser, version, help])
-]
+const cli* = Cmdos(
+  name: "impzy",
+  version: "2.3.0",
+  cmds: @[parse, version, help]
+)
 
+#-- Procesar el mensaje de ayuda para el cli
 const helpMsg* = processHelp(cli)
 

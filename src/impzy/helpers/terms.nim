@@ -22,14 +22,15 @@ proc extractTerm*(input: string): seq[string] =
 
 #-- Verificar el terminos de busqueda ingresado
 proc validateTermSearch*(input: string): bool =
-  const specials = @["export *", "export default *"]
-  var terms: seq[string]
+  proc loopFillTerms(listing: seq[string]): seq[string] =
+    for elem in listing:
+      result.add(completeTerm(elem))
+
+  const specialTerms = @["export *", "export default *"]
+  const terms: seq[string] = loopFillTerms(specialTerms)
   var found: bool
 
-  for elem in specials:
-    add(terms, completeTerm(elem))
-
-  for term in (terms & specials):
+  for term in (terms & specialTerms):
     if input.strip() == term:
       found = true
       break
