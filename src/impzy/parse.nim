@@ -11,12 +11,12 @@ proc generateImports(pattern, dir, extension: string): (seq[string], seq[string]
   # Obtener una lista de archivos y validarla
   var filesFound = files.findFiles(extension, dir, recursiveArg)
   if filesFound.len == 0 or (filesFound.len == 1 and tinyre.contains(filesFound[0], reIndexPatt)):
-    prints.text(red, "  No files found." & "\n")
+    prints.text(red, "  No files found.")
     return
 
   # Verificar que el término de búsqueda sea válido
   if terms.validateTermSearch(pattern) == false:
-    prints.text(red, "  Invalid pattern." & "\n")
+    prints.text(red, "  Invalid pattern.")
     return
 
   # Procesar cada archivo encontrado y validar su contenido

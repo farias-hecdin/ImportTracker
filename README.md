@@ -25,7 +25,7 @@ nimble build
 
 > Nota: ¿No tienes instalado Nimble? No te preocupes. Nimble se instala automáticamente cuando descargas `Nim`. Visita la [web oficial](https://nim-lang.org/) de Nim para descargarlo.
 
-2. Agrega el archivo `impzy`  a tu ruta de `.bashrc` o `.zshrc` para poder ejecutar el programa desde cualquier directorio.
+3. Agrega el archivo `impzy`  a tu ruta de `.bashrc` o `.zshrc` para poder ejecutar el programa desde cualquier directorio.
 
 ```bash
 echo 'export PATH=$PATH:/full/path/to/directory/impzy' >> ~/.zshrc

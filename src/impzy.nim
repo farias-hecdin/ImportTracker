@@ -26,8 +26,8 @@ when isMainModule:
   let timeStart = cpuTime()
   main()
 
-  if parse.numberComponents > 0:
+  if parse.numberComponents >= 0:
     let executionTime = ((cpuTime() - timeStart) * 1000).formatFloat(ffDecimal, 2)
     prints.text(bold, "\nTotal:")
-    prints.text(gray, "$# elements indexed in $# ms.\n", [$numberComponents, executionTime])
+    prints.text(gray, "$1 elements indexed in $2 ms.\n", [$numberComponents, executionTime])
 
