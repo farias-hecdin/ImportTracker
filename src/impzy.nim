@@ -1,33 +1,30 @@
-import std/[os, times, strutils], pkg/[cmdos]
-import impzy/["command", "parse", "/helpers/prints"]
+import std/[os, strutils, times]
+import pkg/[cmdos, hex2ansi]
+import impzy/[cli_setup, text_styled, parse_command]
 
-proc main() =
-  const errorMsg = "Operation invalid.\n"
-  const vers = cli.version
+proc main(): bool =
+  var showTime = false
 
   if paramCount() > 0:
-    showVersion(vers)
+    headingText("2.3.0")
     case paramStr(1):
       of "-h", "--help":
         echo helpMsg
-      of "-v", "--version":
-        echo ""
       of "parse":
-        let values = processArgs(command.parse, true)
-        prints.text(bold, "Initializing...")
-        parse.commParse(values)
-      else:
-        echo errorMsg
-  else:
-    echo errorMsg
+        let (flags, args) = processCmd(parseCmd)
+        showTime = initParseCommand(flags, args)
+      else: errorTextAndExit("operation invalid.")
+  result = showTime
 
 #-- Run script
 when isMainModule:
-  let timeStart = cpuTime()
-  main()
+  let start = cpuTime()
+  let showTime = main()
+  let count = $parse_command.exportedComponents
+  let indexed = $parse_command.indexedFiles
 
-  if parse.numberComponents >= 0:
-    let executionTime = ((cpuTime() - timeStart) * 1000).formatFloat(ffDecimal, 2)
-    prints.text(bold, "\nTotal:")
-    prints.text(gray, "$1 elements indexed in $2 ms.\n", [$numberComponents, executionTime])
-
+  if showTime:
+    let time = ((cpuTime() - start)).formatFloat(ffDecimal, 2)
+    echo "\n\n$#Summary:$#" % [underline, nostyle]
+    echo "  Total elements indexed: $#/$#" % [count, indexed]
+    echo "  Time taken: $#s" % [time]

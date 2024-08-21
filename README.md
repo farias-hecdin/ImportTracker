@@ -1,11 +1,10 @@
-> [!TIP]
-> Use `Google Translate` to read this file in your native language.
+> Translate this file into your native language using `Google Translate` or a [similar service](https://immersivetranslate.com).
 
 # Impzy
 
 Impzy es una pequeña herramienta escrita en [`Nim`](https://nim-lang.org/) que te ayuda a crear un archivo `index` que contiene todas las exportaciones de javascript de un directorio específico.
 
-## Instalación
+## 🗒️ Instalación
 
 Para instalar Impzy, sigue los siguientes:
 
@@ -34,7 +33,7 @@ source ~/.zshrc
 
 Asegúrate de reemplazar `full/path/to/directory/impzy` con la ruta real donde almacenaste el archivo `impzy`.
 
-## Uso
+## 🗒️ Uso
 
 Usar Impzy es fácil. Para empezar, solo necesitas ejecutar el comando `impzy parse` con dos opciones: `--pattern <pattern>` y `--dir <path>`. La opción `--pattern` te permite especificar el patrón que deseas analizar, mientras que `--dir` indica el directorio que deseas examinar. Por ejemplo:
 
@@ -46,11 +45,12 @@ Una vez que ejecutes el comando, Impzy analizará el directorio especificado (en
 
 Los patrones validos son:
 
-* `export *` o `export default *`. Para capturar cualquier expresión válida que esté precedida por una declaración export.
+* `export *` o `export default *` ara capturar cualquier expresión válida que esté precedida por una declaración export.
 * `export function`, `export default function`, `export const`, etc. Esto captura patrones específicos.
+<!-- * `*` para capturar todas las expresion, ya sea que lleve `default` o no. -->
 
 Para más información utiliza el comando `impzy --help`.
 
-## Licencia
+## 🛡️ Licencia
 
 Impzy está bajo la licencia MIT. Consulta el archivo `LICENSE` para obtener más información.

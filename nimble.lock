@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "packages": {
+    "tinyre": {
+      "version": "1.5.2",
+      "vcsRevision": "352cfd6a350cc1110c379559c2a8d0dd530de7fd",
+      "url": "https://github.com/khchen/tinyre",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "85bc2920d5a38af80da3bf5000b07d31aae48f7a"
+      }
+    },
+    "cmdos": {
+      "version": "2.1.0",
+      "vcsRevision": "86af65cede21b27752c8859110c5f690bc70e056",
+      "url": "https://github.com/farias-hecdin/Cmdos",
+      "downloadMethod": "git",
+      "dependencies": [
+        "tinyre"
+      ],
+      "checksums": {
+        "sha1": "e0f282225da4bfed6d268608c8d09053ed83b86f"
+      }
+    },
+    "hex2ansi": {
+      "version": "1.0.0",
+      "vcsRevision": "b2ba387f7e6a7897ca55a62d15666463f05cffcc",
+      "url": "https://github.com/farias-hecdin/HexToAnsi",
+      "downloadMethod": "git",
+      "dependencies": [],
+      "checksums": {
+        "sha1": "0271cd57705e02b82524c13a0852118e94be9638"
+      }
+    }
+  },
+  "tasks": {}
+}
