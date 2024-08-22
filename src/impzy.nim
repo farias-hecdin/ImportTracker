@@ -6,7 +6,7 @@ proc main(): bool =
   var showTime = false
 
   if paramCount() > 0:
-    headingText("2.3.0")
+    headingText("2.5.1")
     case paramStr(1):
       of "-h", "--help":
         echo helpMsg
