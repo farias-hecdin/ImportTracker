@@ -22,19 +22,22 @@ proc appendLine*(file: File, line: string) =
   file.write(line & "\n")
 
 #-- Buscar archivos determinados en un directorio
-proc findFiles*(extension, dir: string, recursive: bool): seq[string] =
+var reExt: Re
+
+proc findFiles*(extension, dir: string, recursive: bool, fixed: bool = false): seq[string] =
   let indexPattern = re"index\."
-  var regex: Re
-  case extension:
-    of "js": regex = re"\.js$"
-    of "jsx": regex = re"\.jsx$"
-    of "ts": regex = re"\.ts$"
-    of "tsx": regex = re"\.tsx$"
-    else: errorTextAndExit("Invalid extension.")
+
+  if not fixed:
+    case extension:
+      of "js": reExt = re"\.js$"
+      of "jsx": reExt = re"\.jsx$"
+      of "ts": reExt = re"\.ts$"
+      of "tsx": reExt = re"\.tsx$"
+      else: errorTextAndExit("Invalid extension.")
 
   for kind, path in walkDir(dir):
-    if kind == pcFile and path.find(regex) > 0:
+    if kind == pcFile and path.find(reExt) > 0:
       if path.find(indexPattern) > 0: continue
       else: result.add(path)
     elif kind == pcDir and recursive:
-      result.add(findFiles(extension, path, recursive))
+      result.add(findFiles(extension, path, recursive, true))
