@@ -47,7 +47,7 @@ Los patrones validos son:
 
 * `export *` o `export default *` ara capturar cualquier expresión válida que esté precedida por una declaración export.
 * `export function`, `export default function`, `export const`, etc. Esto captura patrones específicos.
-<!-- * `*` para capturar todas las expresion, ya sea que lleve `default` o no. -->
+* `*` para capturar todas las expresiones, ya sea que lleve `default` o no.
 
 Para más información utiliza el comando `impzy --help`.
 

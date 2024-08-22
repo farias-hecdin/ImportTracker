@@ -20,11 +20,12 @@ proc generateIndexFile*(file: string, imports, components: seq[string]) =
   appendLine(f, "}")
 
 proc getImportsAndComponents*(pattern, dir, extension: string): (seq[string], seq[string]) =
-  var imports, components, logMsg: seq[string]
+  var imports, components, messages: seq[string]
   let defaultPattern = re"default"
 
   # Verificar que el término de búsqueda sea válido
   if not validateTermSearch(pattern): errorTextAndExit("Invalid pattern.")
+  let keywords = extractTerm(pattern)
   # Obtener una lista de archivos y validarla
   let files = findFiles(extension, dir, recursive)
   let totalFiles = files.len
@@ -33,9 +34,9 @@ proc getImportsAndComponents*(pattern, dir, extension: string): (seq[string], se
   stdout.writeLine(underline & "Progress:" & nostyle)
   # Iterar sobre cada archivo encontrado
   for filePath in files:
-    let identifiers = getIdentifiers(filePath, pattern)
-    indexedFiles += 1
+    let identifiers = getIdentifiers(filePath, keywords)
     # Mostrar progreso en la consola.
+    indexedFiles += 1
     loading(totalFiles, indexedFiles)
     # Verificar si se encontraron identificadores en el archivo actual.
     if identifiers[0] != "":
@@ -48,14 +49,13 @@ proc getImportsAndComponents*(pattern, dir, extension: string): (seq[string], se
       components.add(identifiers)
       imports.add(importStatement)
       # Si está habilitada la opción de logs, agregar el mensaje correspondiente
-      if logs: logMsg.add(foundText(filePath, $identifiers.len))
+      if logs: messages.add(foundText(filePath, $identifiers.len))
     else:
-      if logs: logMsg.add(noFoundText(filePath))
+      if logs: messages.add(noFoundText(filePath))
 
-  if logs: stdout.write("\n\n$#Files:$#\n$#" % [underline, nostyle, logMsg.join("\n")])
+  if logs: stdout.write("\n\n$#Files:$#\n$#" % [underline, nostyle, messages.join("\n")])
   exportedComponents = components.len
   result = (imports, components)
-
 
 #-- Inicializar "--parse [options]"
 proc initParseCommand*(flag: CmdosFlags, arg: CmdosArgs): bool =

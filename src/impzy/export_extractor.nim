@@ -1,6 +1,6 @@
 import std/[strutils, re]
 import pkg/tinyre
-import term_proccesor, file_ops
+import file_ops
 
 #-- Buscar coincidencias
 proc findMatches(content: string, keywords: seq[string]): seq[string] =
@@ -17,9 +17,8 @@ proc processMatches(content: string, matches: seq[string], keywords: seq[string]
         result.add(tinyre.replace(match, regex, "").strip())
 
 #-- Obtener todos los nombres de los elementos de exportacion
-proc getIdentifiers*(fileDir: string, pattern: string): seq[string] =
+proc getIdentifiers*(fileDir: string, keywords: seq[string]): seq[string] =
   let content = readFileContent(fileDir)
-  let keywords = extractTerm(pattern)
   let matches = findMatches(content, keywords)
 
   if matches.len == 0: result.add("")
